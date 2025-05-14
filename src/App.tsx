@@ -1,22 +1,25 @@
-import reactLogo from './assets/react.svg';
+import { useState } from 'react';
 
-import viteLogo from '/vite.svg';
-
-import { ImageList } from './components';
+import { Form, ImageList } from './components';
+import { type Image } from './types';
 
 function App() {
+  const [images, setImages] = useState<Image[]>([]);
+
+  const addImage = (image: Image) => {
+    image.created_at = new Date();
+    image.id = images.map((i) => i.id).reduce((a, b) => Math.max(a, b), 0) + 1;
+    setImages([...images, image]);
+  };
+
+  const deleteImage = (id: number) => {
+    setImages(images.filter((i) => i.id !== id));
+  };
+
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <ImageList />
+      <Form addImage={addImage} />
+      <ImageList images={images} deleteImage={deleteImage} />
     </>
   );
 }
