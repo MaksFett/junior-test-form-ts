@@ -16,7 +16,8 @@
     "@mui/material": "^7.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-hook-form": "^7.56.3"
+    "react-hook-form": "^7.56.3",
+    "unsplash-js": "^7.0.19"
   },
   "devDependencies": {
     "@astral/commitlint-config": "^2.5.0",

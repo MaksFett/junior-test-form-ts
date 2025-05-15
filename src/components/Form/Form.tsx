@@ -15,6 +15,7 @@ export const Form: React.FC<FormProps> = ({ addImage }) => {
   } = useForm<FormInputs>();
   
   const onSubmit: SubmitHandler<FormInputs> = (image) => {
+    image.created_at = new Date();
     addImage(image);
     reset();
   }
