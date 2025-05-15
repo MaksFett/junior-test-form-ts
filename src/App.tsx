@@ -3,6 +3,7 @@ import { createApi } from 'unsplash-js';
 
 import { Form, ImageList } from './components';
 import { type Image } from './types';
+import { Divider } from './styles';
 
 function App() {
   const [images, setImages] = useState<Image[]>([]);
@@ -31,7 +32,7 @@ function App() {
         result.response.results.forEach((image, index) => {
           let newImage: Image = {
             id: index + 1,
-            name: image.alt_description,
+            name: image.alt_description ? image.alt_description : '',
             link: image.urls.full,
             created_at: new Date(image.created_at),
           };
@@ -55,6 +56,7 @@ function App() {
   return (
     <>
       <Form addImage={addImage} />
+      <Divider />
       <ImageList images={images} deleteImage={deleteImage} />
     </>
   );

@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { SubmitButton } from './styles';
+import {
+  FormWrapper,
+  Field,
+  Input,
+  ErrorText,
+  SubmitButton,
+  TextArea,
+  Label,
+  CheckBoxField,
+} from './styles';
 import { type FormProps, type FormInputs } from './types';
 
 export const Form: React.FC<FormProps> = ({ addImage }) => {
@@ -18,21 +27,44 @@ export const Form: React.FC<FormProps> = ({ addImage }) => {
     image.created_at = new Date();
     addImage(image);
     reset();
+    setHasDescription(false);
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input type='text' placeholder='Введите название фото' {...register("name", { required: true })} />
-      {errors.name && <span>Обязательно</span>}
+    <FormWrapper onSubmit={handleSubmit(onSubmit)}>
+      <Field>
+        <Label>Название фото</Label>
+        <Input type='text' placeholder='Введите название фото' {...register('name', { required: true })} />
+        {errors.name ? <ErrorText>Обязательно</ErrorText> : <ErrorText>&nbsp;</ErrorText>}
+      </Field>
 
-      <input type='url' placeholder='Введите ссылку на фото' {...register("link", { required: true })} />
-      {errors.link && <span>Обязательно</span>}
+      <Field>
+        <Label>Ссылка на фото</Label>
+        <Input type='url' placeholder='Введите ссылку на фото' {...register('link', { required: true })} />
+        {errors.link ? <ErrorText>Обязательно</ErrorText> : <ErrorText>&nbsp;</ErrorText>}
+      </Field>
 
-      <input type='checkbox' checked={has_description} onChange={(e) => setHasDescription(e.currentTarget.checked)}/>
+      <CheckBoxField>
+        <input
+          type='checkbox'
+          checked={has_description}
+          onChange={(e) => setHasDescription(e.currentTarget.checked)}
+        />
+        <Label>Описание</Label>
+      </CheckBoxField>
 
-      {has_description && <input type='text' placeholder='' {...register("description", {required: true})}/>}
+      {has_description && (
+        <Field>
+          <Label>Описание фото</Label>
+          <TextArea
+            rows={5}
+            {...register('description', { required: true })}
+          />
+        {errors.description ? <ErrorText>Обязательно</ErrorText> : <ErrorText>&nbsp;</ErrorText>}
+        </Field>
+      )}
 
-      <SubmitButton type="submit"> Добавить фото </SubmitButton>
-    </form>
+      <SubmitButton type='submit'>Добавить фото</SubmitButton>
+    </FormWrapper>
   );
 };
