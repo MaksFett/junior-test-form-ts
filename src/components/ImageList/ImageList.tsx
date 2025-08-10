@@ -1,4 +1,7 @@
-import DeleteIcon from '@mui/icons-material/Delete';
+import { BinOutlineMd } from '@astral/ui';
+import { useEffect } from 'react';
+import { observer } from "mobx-react-lite";
+
 import {
   ImageListWrapper,
   ImageCard,
@@ -8,19 +11,23 @@ import {
   DeleteButton,
   Description
 } from './styles';
-import { ImageListProps } from './types';
+import { imagesStore } from '../../imagesStore';
 
-export const ImageList: React.FC<ImageListProps> = ({ images, deleteImage }) => {
+export const ImageList: React.FC = observer(() => {
+
+  useEffect(() => {
+      imagesStore.loadImages();
+  }, [])
 
   return (
-    <ImageListWrapper>
-      {images.map((image) => (
+    <ImageListWrapper container spacing={5}>
+      {imagesStore.images.map((image) => (
         <ImageCard key={image.id}>
           <DeleteButton onClick={(e) => {
             e.preventDefault();
-            deleteImage(image.id);
+            imagesStore.deleteImage(image.id);
           }}>
-            <DeleteIcon />
+            <BinOutlineMd />
           </DeleteButton>
           <CardHeader>{image.name}</CardHeader>
           <CardDate>
@@ -37,4 +44,4 @@ export const ImageList: React.FC<ImageListProps> = ({ images, deleteImage }) => 
       ))}
     </ImageListWrapper>
   );
-};
+});

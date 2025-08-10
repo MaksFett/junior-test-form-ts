@@ -1,70 +1,82 @@
 import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
 import {
-  FormWrapper,
-  Field,
-  Input,
-  ErrorText,
-  SubmitButton,
-  TextArea,
-  Label,
-  CheckBoxField,
-} from './styles';
-import { type FormProps, type FormInputs } from './types';
+  useForm,
+  Form,
+  Grid,
+  FormTextField,
+  FormCheckbox,
+  FormTextArea,
+} from '@astral/ui';
+import { object, string, min, max, optional } from '@astral/validations';
+import { resolver } from '@astral/validations-react-hook-form-resolver';
+import { observer } from 'mobx-react-lite';
 
-export const Form: React.FC<FormProps> = ({ addImage }) => {
+import { type Image } from '../../types';
+import { imagesStore } from '../../imagesStore';
 
-  const [has_description, setHasDescription] = useState(false);
+import { SubmitButton } from './styles';
+import { type FormInputs } from './types';
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormInputs>();
-  
-  const onSubmit: SubmitHandler<FormInputs> = (image) => {
-    image.created_at = new Date();
-    addImage(image);
-    reset();
+const validationSchema = object<FormInputs>({
+  name: string(min(5), max(40)),
+  link: string(),
+  description: optional(string(min(20), max(200))),
+});
+
+export const ImageForm: React.FC = observer(() => {
+  const [hasDescription, setHasDescription] = useState(false);
+
+  const form = useForm<FormInputs>({
+    resolver: resolver<FormInputs>(validationSchema),
+  });
+
+  const handleSubmit = (values: FormInputs) => {
+    let image: Image = { ...values, id: 0, created_at: new Date() };
+
+    imagesStore.addImage(image);
+    form.reset();
     setHasDescription(false);
-  }
+  };
 
   return (
-    <FormWrapper onSubmit={handleSubmit(onSubmit)}>
-      <Field>
-        <Label>Название фото</Label>
-        <Input type='text' placeholder='Введите название фото' {...register('name', { required: true })} />
-        {errors.name ? <ErrorText>Обязательно</ErrorText> : <ErrorText>&nbsp;</ErrorText>}
-      </Field>
-
-      <Field>
-        <Label>Ссылка на фото</Label>
-        <Input type='url' placeholder='Введите ссылку на фото' {...register('link', { required: true })} />
-        {errors.link ? <ErrorText>Обязательно</ErrorText> : <ErrorText>&nbsp;</ErrorText>}
-      </Field>
-
-      <CheckBoxField>
-        <input
-          type='checkbox'
-          checked={has_description}
-          onChange={(e) => setHasDescription(e.currentTarget.checked)}
+    <Form noValidate form={form} onSubmit={form.handleSubmit(handleSubmit)}>
+      <Grid container rowSpacing={2} columnSpacing={4} columns={2}>
+        <FormTextField
+          required
+          label="Название фото"
+          placeholder="Введите название фото"
+          control={form.control}
+          name="name"
         />
-        <Label>Описание</Label>
-      </CheckBoxField>
 
-      {has_description && (
-        <Field>
-          <Label>Описание фото</Label>
-          <TextArea
+        <FormTextField
+          required
+          label="Ссылка на фото"
+          type="url"
+          placeholder="Введите ссылку на фото"
+          control={form.control}
+          name="link"
+        />
+
+        <FormCheckbox
+          required
+          title="Описание"
+          checked={hasDescription}
+          onChange={(e) => setHasDescription(e.currentTarget.checked)}
+          name="has_description"
+        />
+
+        {hasDescription && (
+          <FormTextArea
+            required
+            label="Описание фото"
+            control={form.control}
             rows={5}
-            {...register('description', { required: true })}
+            name="description"
           />
-        {errors.description ? <ErrorText>Обязательно</ErrorText> : <ErrorText>&nbsp;</ErrorText>}
-        </Field>
-      )}
-
-      <SubmitButton type='submit'>Добавить фото</SubmitButton>
-    </FormWrapper>
+        )}
+      </Grid>
+      <SubmitButton>Добавить фото</SubmitButton>
+    </Form>
   );
-};
+});

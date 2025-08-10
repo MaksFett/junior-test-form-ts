@@ -1,30 +1,24 @@
-import styled from '@emotion/styled';
+import { styled, IconButton, Typography, Grid, Paper } from '@astral/ui'
 
 
-export const ImageListWrapper = styled.ul`
-  display: grid;
+export const ImageListWrapper = styled(Grid)`
+  margin-top: 20px;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 0;
-  list-style: none;
 `;
 
-export const ImageCard = styled.li`
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+export const ImageCard = styled(Paper)`
   position: relative;
   display: flex;
   flex-direction: column;
 `;
 
-export const CardHeader = styled.div`
+export const CardHeader = styled(Typography)`
   padding: 12px 16px;
   font-weight: bold;
   width: 75%;
 `;
 
-export const CardDate = styled.div`
+export const CardDate = styled(Typography)`
   padding: 0 16px;
   font-size: 14px;
   color: #666;
@@ -38,13 +32,13 @@ export const CardImage = styled.img`
   object-fit: contain;
 `;
 
-export const Description = styled.div`
+export const Description = styled(Typography)`
   padding: 8px 16px;
   font-size: 14px;
   color: #444;
 `;
 
-export const DeleteButton = styled.button`
+export const DeleteButton = styled(IconButton)`
   background: none;
   border: none;
   cursor: pointer;
@@ -55,5 +49,6 @@ export const DeleteButton = styled.button`
 
   &:hover {
     color: #e53935;
+    background: none;
   }
 `;
