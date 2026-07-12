@@ -10,7 +10,6 @@ const App = observer(() => {
   return (
     <ThemeProvider theme={theme}>
       <ImageForm />
-      <Divider />
       <ImageList />
     </ThemeProvider>
   );
